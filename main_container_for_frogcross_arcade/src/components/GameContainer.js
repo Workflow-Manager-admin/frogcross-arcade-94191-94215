@@ -258,17 +258,68 @@ const GameContainer = () => {
       
       lanes.push(
         <div key={`lane-${i}`} className={laneType}>
-          {/* Display vehicles in this lane */}
-          {laneVehicles.map(vehicle => (
-            <div 
-              key={`vehicle-${vehicle.id}`}
-              className={`vehicle ${vehicle.direction === 'right' ? 'vehicle-right' : 'vehicle-left'}`}
-              style={{ 
-                left: `${(vehicle.x * 100) / gridWidth}%`,
-                width: `${(vehicle.length * 100) / gridWidth}%`
-              }}
-            />
-          ))}
+          {/* Display vehicles in this lane with wrapping animation */}
+          {laneVehicles.map(vehicle => {
+            if (vehicle.wrapping) {
+              // For wrapping vehicles, render two parts: exiting and entering
+              return (
+                <React.Fragment key={`vehicle-${vehicle.id}`}>
+                  {/* Exiting part of the vehicle */}
+                  {vehicle.direction === 'right' && (
+                    <div 
+                      className={`vehicle vehicle-right`}
+                      style={{ 
+                        left: `${((gridWidth - vehicle.exitingPart) * 100) / gridWidth}%`,
+                        width: `${(vehicle.exitingPart * 100) / gridWidth}%`
+                      }}
+                    />
+                  )}
+                  
+                  {/* Entering part of the vehicle */}
+                  {vehicle.direction === 'right' ? (
+                    <div 
+                      className={`vehicle vehicle-right`}
+                      style={{ 
+                        left: `0%`,
+                        width: `${(vehicle.enteringPart * 100) / gridWidth}%`
+                      }}
+                    />
+                  ) : (
+                    <div 
+                      className={`vehicle vehicle-left`}
+                      style={{ 
+                        left: `${((gridWidth - vehicle.enteringPart) * 100) / gridWidth}%`,
+                        width: `${(vehicle.enteringPart * 100) / gridWidth}%`,
+                      }}
+                    />
+                  )}
+                  
+                  {/* Exiting part for left-moving vehicles */}
+                  {vehicle.direction === 'left' && (
+                    <div 
+                      className={`vehicle vehicle-left`}
+                      style={{ 
+                        left: `0%`,
+                        width: `${(Math.abs(vehicle.exitingPart) * 100) / gridWidth}%`
+                      }}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            } else {
+              // Regular vehicle rendering
+              return (
+                <div 
+                  key={`vehicle-${vehicle.id}`}
+                  className={`vehicle ${vehicle.direction === 'right' ? 'vehicle-right' : 'vehicle-left'}`}
+                  style={{ 
+                    left: `${(vehicle.x * 100) / gridWidth}%`,
+                    width: `${(vehicle.length * 100) / gridWidth}%`
+                  }}
+                />
+              );
+            }
+          })}
           
           {/* Display frog if it's in this lane */}
           {frogPosition.y === i && (
