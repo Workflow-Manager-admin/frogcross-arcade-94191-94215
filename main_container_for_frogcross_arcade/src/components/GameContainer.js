@@ -331,7 +331,7 @@ const GameContainer = () => {
           {/* Display frog if it's in this lane */}
           {frogPosition.y === i && (
             <div 
-              className="frog"
+              className={`frog ${frogAnimation}`}
               style={{ left: `${(frogPosition.x * 100) / gridWidth}%` }}
             />
           )}
