@@ -126,18 +126,16 @@ const GameContainer = () => {
               updatedVehicle.exitingPart = 0;
             }
           } else {
-            // For left-moving vehicles, increase exiting part
+            // For left-moving vehicles
             updatedVehicle.exitingPart -= moveAmount;
+            updatedVehicle.enteringPart += moveAmount;
             
-            // When fully exited, end wrapping
-            if (updatedVehicle.exitingPart <= -vehicle.length) {
+            // When fully exited and entered, end wrapping
+            if (updatedVehicle.enteringPart >= vehicle.length) {
               updatedVehicle.wrapping = false;
               updatedVehicle.x = gridWidth - updatedVehicle.enteringPart;
               updatedVehicle.enteringPart = 0;
               updatedVehicle.exitingPart = 0;
-            } else {
-              // Continue entering from the right
-              updatedVehicle.enteringPart += moveAmount;
             }
           }
           
