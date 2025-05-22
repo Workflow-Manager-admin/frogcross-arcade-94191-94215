@@ -86,7 +86,7 @@ const GameContainer = () => {
     setLevel(1);
     setFrogPosition({
       x: 7,
-      y: 9
+      y: 10
     });
   };
   
