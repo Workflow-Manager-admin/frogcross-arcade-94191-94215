@@ -90,7 +90,7 @@
   border-radius: 4px;
   z-index: 5;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  transition: left 0.05s linear; /* Smooth transition for vehicle movement */
+  transition: left 0.05s linear, width 0.05s linear; /* Smooth transition for vehicle movement and size */
 }
 
 .vehicle-right {
