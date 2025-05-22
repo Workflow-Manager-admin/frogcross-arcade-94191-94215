@@ -166,7 +166,7 @@ const GameContainer = () => {
         return updatedVehicle;
       })
     );
-  };
+  }, [level, gridWidth]);
   
   // Check if frog collides with any vehicle
   const checkCollisions = () => {
