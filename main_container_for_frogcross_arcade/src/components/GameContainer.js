@@ -31,6 +31,42 @@ const GameContainer = () => {
   const totalLanes = 11; // 1 starting lane, 9 crossing lanes, 1 goal lane
   const gridWidth = 15; // 15 grid cells horizontally
   
+  // Reset frog to starting position
+  const resetFrog = useCallback(() => {
+    setFrogPosition({
+      x: 7,
+      y: 10
+    });
+  }, []);
+  
+  // Handle collision with vehicle
+  const handleCollision = useCallback(() => {
+    // Reduce lives by 1
+    const updatedLives = lives - 1;
+    setLives(updatedLives);
+    
+    // Check for game over
+    if (updatedLives <= 0) {
+      setGameOver(true);
+      return;
+    }
+    
+    // Reset frog to starting position
+    resetFrog();
+  }, [lives, resetFrog]);
+  
+  // Handle level completion
+  const handleLevelComplete = useCallback(() => {
+    // Increase score (10 points per level)
+    setScore(prevScore => prevScore + 10 * level);
+    
+    // Advance to next level
+    setLevel(prevLevel => prevLevel + 1);
+    
+    // Reset frog position
+    resetFrog();
+  }, [level, resetFrog]);
+  
   // Handle key presses for frog movement
   const handleKeyDown = useCallback((event) => {
     if (!gameActive || gameOver) return;
@@ -67,39 +103,34 @@ const GameContainer = () => {
     }
   }, [gameActive, frogPosition, gameOver, handleLevelComplete]);
   
-  // Set up event listeners when component mounts
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    
-    // Clean up event listeners when component unmounts
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [gameActive, frogPosition, gameOver, handleKeyDown]); // Re-add listeners when these dependencies change
-  
-  // Animation timer for vehicle movement
-  useEffect(() => {
-    let animationTimer;
-    
-    if (gameActive && !gameOver) {
-      // Update vehicle positions every 50ms
-      animationTimer = setInterval(() => {
-        moveVehicles();
-      }, 50);
+  // Check if frog collides with any vehicle
+  const checkCollisions = useCallback(() => {
+    // Only check road lanes (not start or goal)
+    if (frogPosition.y === 0 || frogPosition.y === 10) {
+      return;
     }
     
-    // Clean up timer when component unmounts or game stops
-    return () => {
-      clearInterval(animationTimer);
-    };
-  }, [gameActive, level, gameOver, moveVehicles]);
-  
-  // Check for collisions after each vehicle movement or frog position update
-  useEffect(() => {
-    if (gameActive && !gameOver) {
-      checkCollisions();
+    // Get vehicles in the same lane as frog
+    const vehiclesInLane = vehicles.filter(vehicle => vehicle.y === frogPosition.y);
+    
+    // Check if frog collides with any vehicle in the lane
+    const collision = vehiclesInLane.some(vehicle => {
+      // Frog position (center point)
+      const frogX = frogPosition.x;
+      
+      // Vehicle occupies space from its x position to x + length
+      const vehicleStart = vehicle.x;
+      const vehicleEnd = vehicle.x + vehicle.length;
+      
+      // Check if frog is within vehicle bounds
+      // Allow a small margin (0.5) for visual clarity
+      return frogX + 0.5 > vehicleStart && frogX - 0.5 < vehicleEnd;
+    });
+    
+    if (collision) {
+      handleCollision();
     }
-  }, [vehicles, frogPosition, gameActive, gameOver, checkCollisions]);
+  }, [frogPosition, vehicles, handleCollision]);
   
   // Move vehicles based on direction and speed with smooth wrapping
   const moveVehicles = useCallback(() => {
@@ -168,70 +199,39 @@ const GameContainer = () => {
     );
   }, [level, gridWidth]);
   
-  // Check if frog collides with any vehicle
-  const checkCollisions = useCallback(() => {
-    // Only check road lanes (not start or goal)
-    if (frogPosition.y === 0 || frogPosition.y === 10) {
-      return;
+  // Set up event listeners when component mounts
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Clean up event listeners when component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]); // Re-add listeners when these dependencies change
+  
+  // Animation timer for vehicle movement
+  useEffect(() => {
+    let animationTimer;
+    
+    if (gameActive && !gameOver) {
+      // Update vehicle positions every 50ms
+      animationTimer = setInterval(() => {
+        moveVehicles();
+      }, 50);
     }
     
-    // Get vehicles in the same lane as frog
-    const vehiclesInLane = vehicles.filter(vehicle => vehicle.y === frogPosition.y);
-    
-    // Check if frog collides with any vehicle in the lane
-    const collision = vehiclesInLane.some(vehicle => {
-      // Frog position (center point)
-      const frogX = frogPosition.x;
-      
-      // Vehicle occupies space from its x position to x + length
-      const vehicleStart = vehicle.x;
-      const vehicleEnd = vehicle.x + vehicle.length;
-      
-      // Check if frog is within vehicle bounds
-      // Allow a small margin (0.5) for visual clarity
-      return frogX + 0.5 > vehicleStart && frogX - 0.5 < vehicleEnd;
-    });
-    
-    if (collision) {
-      handleCollision();
+    // Clean up timer when component unmounts or game stops
+    return () => {
+      clearInterval(animationTimer);
+    };
+  }, [gameActive, gameOver, moveVehicles]);
+  
+  // Check for collisions after each vehicle movement or frog position update
+  useEffect(() => {
+    if (gameActive && !gameOver) {
+      checkCollisions();
     }
-  }, [gameActive, frogPosition, gameOver, handleLevelComplete]);
-  
-  // Handle collision with vehicle
-  const handleCollision = useCallback(() => {
-    // Reduce lives by 1
-    const updatedLives = lives - 1;
-    setLives(updatedLives);
-    
-    // Check for game over
-    if (updatedLives <= 0) {
-      setGameOver(true);
-      return;
-    }
-    
-    // Reset frog to starting position
-    resetFrog();
-  }, [lives, resetFrog]);
-  
-  // Handle level completion
-  const handleLevelComplete = useCallback(() => {
-    // Increase score (10 points per level)
-    setScore(prevScore => prevScore + 10 * level);
-    
-    // Advance to next level
-    setLevel(prevLevel => prevLevel + 1);
-    
-    // Reset frog position
-    resetFrog();
-  }, [level, resetFrog]);
-  
-  // Reset frog to starting position
-  const resetFrog = useCallback(() => {
-    setFrogPosition({
-      x: 7,
-      y: 10
-    });
-  }, []);
+  }, [vehicles, frogPosition, gameActive, gameOver, checkCollisions]);
   
   // Generate lanes for the game board
   const renderLanes = () => {
