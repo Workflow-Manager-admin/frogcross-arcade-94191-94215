@@ -1,17 +1,35 @@
 :root {
+  /* Brand colors */
   --kavia-orange: #E87A41;
   --kavia-dark: #1A1A1A;
   --text-color: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --border-color: rgba(255, 255, 255, 0.1);
   
-  /* Game-specific colors */
+  /* Arcade-inspired colors */
+  --arcade-neon-blue: #00d9ff;
+  --arcade-neon-pink: #ff00ff;
+  --arcade-neon-yellow: #ffff00;
+  --arcade-neon-green: #39ff14;
+  --arcade-purple: #9900ff;
+  
+  /* Game-specific colors with enhanced palette */
   --frog-green: #4CAF50;
+  --frog-green-glow: rgba(76, 175, 80, 0.6);
   --goal-blue: #1565C0;
+  --goal-blue-glow: rgba(21, 101, 192, 0.6);
   --start-green: #2E7D32;
-  --road-dark: #424242;
-  --road-light: #616161;
+  --start-green-glow: rgba(46, 125, 50, 0.6);
+  --road-dark: #303030;
+  --road-light: #505050;
+  --road-stripe: rgba(255, 255, 255, 0.15);
   --vehicle-red: #F44336;
+  --vehicle-blue: #2196F3;
+  --vehicle-yellow: #FFC107;
+  --vehicle-purple: #9C27B0;
+  --overlay-bg: rgba(0, 0, 0, 0.85);
+  --success-glow: rgba(57, 255, 20, 0.7);
+  --danger-glow: rgba(255, 0, 72, 0.7);
 }
 
 body {
