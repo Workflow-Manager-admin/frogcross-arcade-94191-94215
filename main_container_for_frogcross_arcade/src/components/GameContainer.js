@@ -226,12 +226,12 @@ const GameContainer = () => {
   }, [level, resetFrog]);
   
   // Reset frog to starting position
-  const resetFrog = () => {
+  const resetFrog = useCallback(() => {
     setFrogPosition({
       x: 7,
       y: 10
     });
-  };
+  }, []);
   
   // Generate lanes for the game board
   const renderLanes = () => {
