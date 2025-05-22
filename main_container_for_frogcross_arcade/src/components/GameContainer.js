@@ -20,11 +20,11 @@ const GameContainer = () => {
     y: 10  // Start at the bottom of the grid (0-indexed, so 10 is the 11th lane)
   });
   
-  // Vehicle positions
+  // Vehicle positions with wrapping state
   const [vehicles, setVehicles] = useState([
-    { id: 1, x: 2, y: 3, direction: 'right', length: 2, speed: 1 },  // Lane 4 (0-indexed)
-    { id: 2, x: 8, y: 5, direction: 'left', length: 3, speed: 1.2 },   // Lane 6 (0-indexed)
-    { id: 3, x: 4, y: 7, direction: 'right', length: 2, speed: 0.8 }   // Lane 8 (0-indexed)
+    { id: 1, x: 2, y: 3, direction: 'right', length: 2, speed: 1, wrapping: false, exitingPart: 0, enteringPart: 0 },  // Lane 4 (0-indexed)
+    { id: 2, x: 8, y: 5, direction: 'left', length: 3, speed: 1.2, wrapping: false, exitingPart: 0, enteringPart: 0 },   // Lane 6 (0-indexed)
+    { id: 3, x: 4, y: 7, direction: 'right', length: 2, speed: 0.8, wrapping: false, exitingPart: 0, enteringPart: 0 }   // Lane 8 (0-indexed)
   ]);
   
   // Game configuration

@@ -2,9 +2,9 @@
 > react-kavia@0.1.0 start
 > react-scripts start
 
-(node:1512) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(node:1854) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
 (Use `node --trace-deprecation ...` to show where the warning was created)
-(node:1512) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(node:1854) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
 Starting the development server...
 
 Compiled successfully!
@@ -19,40 +19,3 @@ To create a production build, use npm run build.
 
 webpack compiled successfully
 Compiling...
-Compiled with warnings.
-
-[eslint] 
-src/components/GameContainer.js
-  Line 78:6:   React Hook useEffect has a missing dependency: 'handleKeyDown'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
-  Line 95:6:   React Hook useEffect has a missing dependency: 'moveVehicles'. Either include it or remove the dependency array                                     react-hooks/exhaustive-deps
-  Line 102:6:  React Hook useEffect has missing dependencies: 'checkCollisions', 'gameActive', and 'gameOver'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
-
-Search for the keywords to learn more about each warning.
-To ignore, add // eslint-disable-next-line to the line before.
-
-WARNING in [eslint] 
-src/components/GameContainer.js
-  Line 78:6:   React Hook useEffect has a missing dependency: 'handleKeyDown'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
-  Line 95:6:   React Hook useEffect has a missing dependency: 'moveVehicles'. Either include it or remove the dependency array                                     react-hooks/exhaustive-deps
-  Line 102:6:  React Hook useEffect has missing dependencies: 'checkCollisions', 'gameActive', and 'gameOver'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
-
-webpack compiled with 1 warning
-Compiling...
-Compiled with warnings.
-
-[eslint] 
-src/components/GameContainer.js
-  Line 78:6:   React Hook useEffect has a missing dependency: 'handleKeyDown'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
-  Line 95:6:   React Hook useEffect has a missing dependency: 'moveVehicles'. Either include it or remove the dependency array                                     react-hooks/exhaustive-deps
-  Line 102:6:  React Hook useEffect has missing dependencies: 'checkCollisions', 'gameActive', and 'gameOver'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
-
-Search for the keywords to learn more about each warning.
-To ignore, add // eslint-disable-next-line to the line before.
-
-WARNING in [eslint] 
-src/components/GameContainer.js
-  Line 78:6:   React Hook useEffect has a missing dependency: 'handleKeyDown'. Either include it or remove the dependency array                                    react-hooks/exhaustive-deps
-  Line 95:6:   React Hook useEffect has a missing dependency: 'moveVehicles'. Either include it or remove the dependency array                                     react-hooks/exhaustive-deps
-  Line 102:6:  React Hook useEffect has missing dependencies: 'checkCollisions', 'gameActive', and 'gameOver'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
-
-webpack compiled with 1 warning
