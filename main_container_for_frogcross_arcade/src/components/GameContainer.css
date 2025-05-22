@@ -1,0 +1,109 @@
+/* Game Container Styling */
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Game Board */
+.game-board {
+  width: 100%;
+  aspect-ratio: 15/11;
+  border: 4px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #222;
+  position: relative;
+  margin: 20px 0;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Lanes Styling */
+.lane {
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+.start-lane {
+  background-color: #2E7D32; /* Dark green for starting area */
+}
+
+.goal-lane {
+  background-color: #1565C0; /* Blue for goal area */
+}
+
+.road-lane {
+  background-image: linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 6.666% 100%; /* 15 segments */
+}
+
+.road-lane-dark {
+  background-color: #424242;
+}
+
+.road-lane-light {
+  background-color: #616161;
+}
+
+/* Frog styling */
+.frog {
+  position: absolute;
+  width: 6%;
+  height: 80%;
+  background-color: #4CAF50; /* Bright green for frog */
+  border-radius: 50%;
+  top: 10%;
+  transition: left 0.1s ease-out;
+  z-index: 10;
+}
+
+/* Game Stats */
+.game-stats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.stats-item {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* Game Controls */
+.game-controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.control-info {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .game-container {
+    padding: 10px;
+  }
+  
+  .stats-item {
+    font-size: 1rem;
+  }
+  
+  .control-info {
+    font-size: 0.9rem;
+  }
+}
