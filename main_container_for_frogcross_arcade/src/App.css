@@ -73,6 +73,46 @@ body {
   gap: 24px;
 }
 
+/* Game page styling */
+.game-page {
+  padding-top: 80px;
+  padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-instructions {
+  margin-top: 30px;
+  max-width: 600px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.game-instructions h2 {
+  color: var(--kavia-orange);
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+
+.game-instructions ul {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  padding-left: 20px;
+}
+
+.nav-info {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 .subtitle {
   color: var(--kavia-orange);
   font-weight: 500;
