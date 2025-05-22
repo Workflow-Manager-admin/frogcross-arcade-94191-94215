@@ -4,6 +4,14 @@
   --text-color: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --border-color: rgba(255, 255, 255, 0.1);
+  
+  /* Game-specific colors */
+  --frog-green: #4CAF50;
+  --goal-blue: #1565C0;
+  --start-green: #2E7D32;
+  --road-dark: #424242;
+  --road-light: #616161;
+  --vehicle-red: #F44336;
 }
 
 body {
