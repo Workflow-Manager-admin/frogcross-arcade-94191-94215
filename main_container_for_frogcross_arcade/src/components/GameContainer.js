@@ -57,6 +57,13 @@ const GameContainer = () => {
   
   // Handle level completion
   const handleLevelComplete = useCallback(() => {
+    // Add success animation to game board
+    const gameBoard = document.querySelector('.game-board');
+    gameBoard.classList.add('success-animation');
+    setTimeout(() => {
+      gameBoard.classList.remove('success-animation');
+    }, 1000);
+    
     // Increase score (10 points per level)
     setScore(prevScore => prevScore + 10 * level);
     
