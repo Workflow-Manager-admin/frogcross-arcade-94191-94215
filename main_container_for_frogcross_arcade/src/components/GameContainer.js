@@ -67,6 +67,9 @@ const GameContainer = () => {
     resetFrog();
   }, [level, resetFrog]);
   
+  // Frog animation states
+  const [frogAnimation, setFrogAnimation] = useState('');
+  
   // Handle key presses for frog movement
   const handleKeyDown = useCallback((event) => {
     if (!gameActive || gameOver) return;
@@ -94,6 +97,12 @@ const GameContainer = () => {
     
     // Update frog position if it changed
     if (newPosition.x !== frogPosition.x || newPosition.y !== frogPosition.y) {
+      // Add hopping animation
+      setFrogAnimation('hopping');
+      setTimeout(() => {
+        setFrogAnimation('');
+      }, 200);
+      
       setFrogPosition(newPosition);
       
       // Check if frog reached the goal
