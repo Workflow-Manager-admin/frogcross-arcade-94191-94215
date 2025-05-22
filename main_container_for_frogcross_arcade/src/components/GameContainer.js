@@ -41,18 +41,26 @@ const GameContainer = () => {
   
   // Handle collision with vehicle
   const handleCollision = useCallback(() => {
-    // Reduce lives by 1
-    const updatedLives = lives - 1;
-    setLives(updatedLives);
+    // Trigger collision animation
+    setCollisionAnimation(true);
     
-    // Check for game over
-    if (updatedLives <= 0) {
-      setGameOver(true);
-      return;
-    }
-    
-    // Reset frog to starting position
-    resetFrog();
+    // Reset animation after 400ms and continue with game logic
+    setTimeout(() => {
+      setCollisionAnimation(false);
+      
+      // Reduce lives by 1
+      const updatedLives = lives - 1;
+      setLives(updatedLives);
+      
+      // Check for game over
+      if (updatedLives <= 0) {
+        setGameOver(true);
+        return;
+      }
+      
+      // Reset frog to starting position
+      resetFrog();
+    }, 400);
   }, [lives, resetFrog]);
   
   // Handle level completion
@@ -339,7 +347,7 @@ const GameContainer = () => {
           {/* Display frog if it's in this lane */}
           {frogPosition.y === i && (
             <div 
-              className={`frog ${frogAnimation}`}
+              className={`frog ${frogAnimation} ${collisionAnimation ? 'collision' : ''}`}
               style={{ left: `${(frogPosition.x * 100) / gridWidth}%` }}
             />
           )}
