@@ -169,7 +169,7 @@ const GameContainer = () => {
   }, [level, gridWidth]);
   
   // Check if frog collides with any vehicle
-  const checkCollisions = () => {
+  const checkCollisions = useCallback(() => {
     // Only check road lanes (not start or goal)
     if (frogPosition.y === 0 || frogPosition.y === 10) {
       return;
