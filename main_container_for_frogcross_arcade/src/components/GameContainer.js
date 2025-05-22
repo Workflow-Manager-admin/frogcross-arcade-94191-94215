@@ -198,7 +198,7 @@ const GameContainer = () => {
   }, [gameActive, frogPosition, gameOver, handleLevelComplete]);
   
   // Handle collision with vehicle
-  const handleCollision = () => {
+  const handleCollision = useCallback(() => {
     // Reduce lives by 1
     const updatedLives = lives - 1;
     setLives(updatedLives);
@@ -211,10 +211,10 @@ const GameContainer = () => {
     
     // Reset frog to starting position
     resetFrog();
-  };
+  }, [lives, resetFrog]);
   
   // Handle level completion
-  const handleLevelComplete = () => {
+  const handleLevelComplete = useCallback(() => {
     // Increase score (10 points per level)
     setScore(prevScore => prevScore + 10 * level);
     
