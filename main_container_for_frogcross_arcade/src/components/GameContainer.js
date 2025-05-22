@@ -4,14 +4,15 @@ import './GameContainer.css';
 /**
  * Main container component for the FrogCross Arcade game.
  * This component handles the layout for the game including lanes, 
- * starting position, goal area, and placeholders for game elements.
+ * starting position, goal area, and game elements.
  */
 const GameContainer = () => {
-  // Game state placeholders
+  // Game state
   const [gameActive, setGameActive] = useState(false);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [level, setLevel] = useState(1);
+  const [gameOver, setGameOver] = useState(false);
   
   // Frog position state (grid-based)
   const [frogPosition, setFrogPosition] = useState({
@@ -19,9 +20,20 @@ const GameContainer = () => {
     y: 10  // Start at the bottom of the grid (0-indexed, so 10 is the 11th lane)
   });
   
+  // Vehicle positions
+  const [vehicles, setVehicles] = useState([
+    { id: 1, x: 2, y: 3, direction: 'right', length: 2, speed: 1 },  // Lane 4 (0-indexed)
+    { id: 2, x: 8, y: 5, direction: 'left', length: 3, speed: 1.2 },   // Lane 6 (0-indexed)
+    { id: 3, x: 4, y: 7, direction: 'right', length: 2, speed: 0.8 }   // Lane 8 (0-indexed)
+  ]);
+  
+  // Game configuration
+  const totalLanes = 11; // 1 starting lane, 9 crossing lanes, 1 goal lane
+  const gridWidth = 15; // 15 grid cells horizontally
+  
   // Handle key presses for frog movement
   const handleKeyDown = (event) => {
-    if (!gameActive) return;
+    if (!gameActive || gameOver) return;
     
     // Clone current position to avoid direct state mutation
     const newPosition = { ...frogPosition };
@@ -47,6 +59,11 @@ const GameContainer = () => {
     // Update frog position if it changed
     if (newPosition.x !== frogPosition.x || newPosition.y !== frogPosition.y) {
       setFrogPosition(newPosition);
+      
+      // Check if frog reached the goal
+      if (newPosition.y === 0) {
+        handleLevelComplete();
+      }
     }
   };
   
@@ -58,17 +75,126 @@ const GameContainer = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [gameActive, frogPosition]); // Re-add listeners when these dependencies change
+  }, [gameActive, frogPosition, gameOver]); // Re-add listeners when these dependencies change
   
-  // Vehicle positions (initial placeholders)
-  const [vehicles, setVehicles] = useState([
-    { id: 1, x: 2, y: 3, direction: 'right', length: 2 },  // Lane 4 (0-indexed)
-    { id: 2, x: 8, y: 5, direction: 'left', length: 3 },   // Lane 6 (0-indexed)
-    { id: 3, x: 4, y: 7, direction: 'right', length: 2 }   // Lane 8 (0-indexed)
-  ]);
+  // Animation timer for vehicle movement
+  useEffect(() => {
+    let animationTimer;
+    
+    if (gameActive && !gameOver) {
+      // Update vehicle positions every 50ms
+      animationTimer = setInterval(() => {
+        moveVehicles();
+      }, 50);
+    }
+    
+    // Clean up timer when component unmounts or game stops
+    return () => {
+      clearInterval(animationTimer);
+    };
+  }, [gameActive, vehicles, level, gameOver]);
   
-  // Number of lanes in the game
-  const totalLanes = 11; // 1 starting lane, 9 crossing lanes, 1 goal lane
+  // Check for collisions after each vehicle movement or frog position update
+  useEffect(() => {
+    if (gameActive && !gameOver) {
+      checkCollisions();
+    }
+  }, [vehicles, frogPosition]);
+  
+  // Move vehicles based on direction and speed
+  const moveVehicles = () => {
+    // Speed factor increases with level
+    const levelSpeedFactor = 1 + (level - 1) * 0.2;
+    
+    setVehicles(currentVehicles => 
+      currentVehicles.map(vehicle => {
+        // Calculate new position based on direction and speed
+        let newX = vehicle.x;
+        const moveAmount = vehicle.speed * levelSpeedFactor * 0.1;
+        
+        if (vehicle.direction === 'right') {
+          newX = vehicle.x + moveAmount;
+          // Wrap around when vehicle goes off-screen
+          if (newX > gridWidth) {
+            newX = -vehicle.length;
+          }
+        } else {
+          newX = vehicle.x - moveAmount;
+          // Wrap around when vehicle goes off-screen
+          if (newX + vehicle.length < 0) {
+            newX = gridWidth;
+          }
+        }
+        
+        return { ...vehicle, x: newX };
+      })
+    );
+  };
+  
+  // Check if frog collides with any vehicle
+  const checkCollisions = () => {
+    // Only check road lanes (not start or goal)
+    if (frogPosition.y === 0 || frogPosition.y === 10) {
+      return;
+    }
+    
+    // Get vehicles in the same lane as frog
+    const vehiclesInLane = vehicles.filter(vehicle => vehicle.y === frogPosition.y);
+    
+    // Check if frog collides with any vehicle in the lane
+    const collision = vehiclesInLane.some(vehicle => {
+      // Frog position (center point)
+      const frogX = frogPosition.x;
+      
+      // Vehicle occupies space from its x position to x + length
+      const vehicleStart = vehicle.x;
+      const vehicleEnd = vehicle.x + vehicle.length;
+      
+      // Check if frog is within vehicle bounds
+      // Allow a small margin (0.5) for visual clarity
+      return frogX + 0.5 > vehicleStart && frogX - 0.5 < vehicleEnd;
+    });
+    
+    if (collision) {
+      handleCollision();
+    }
+  };
+  
+  // Handle collision with vehicle
+  const handleCollision = () => {
+    // Reduce lives by 1
+    const updatedLives = lives - 1;
+    setLives(updatedLives);
+    
+    // Check for game over
+    if (updatedLives <= 0) {
+      setGameOver(true);
+      return;
+    }
+    
+    // Reset frog to starting position
+    resetFrog();
+  };
+  
+  // Handle level completion
+  const handleLevelComplete = () => {
+    // Increase score (10 points per level)
+    setScore(prevScore => prevScore + 10 * level);
+    
+    // Advance to next level
+    setLevel(prevLevel => prevLevel + 1);
+    
+    // Reset frog position
+    resetFrog();
+  };
+  
+  // Reset frog to starting position
+  const resetFrog = () => {
+    setFrogPosition({
+      x: 7,
+      y: 10
+    });
+  };
   
   // Generate lanes for the game board
   const renderLanes = () => {
@@ -99,8 +225,8 @@ const GameContainer = () => {
               key={`vehicle-${vehicle.id}`}
               className={`vehicle ${vehicle.direction === 'right' ? 'vehicle-right' : 'vehicle-left'}`}
               style={{ 
-                left: `${(vehicle.x * 100) / 15}%`,
-                width: `${(vehicle.length * 100) / 15}%`
+                left: `${(vehicle.x * 100) / gridWidth}%`,
+                width: `${(vehicle.length * 100) / gridWidth}%`
               }}
             />
           ))}
@@ -109,7 +235,7 @@ const GameContainer = () => {
           {frogPosition.y === i && (
             <div 
               className="frog"
-              style={{ left: `${(frogPosition.x * 100) / 15}%` }}
+              style={{ left: `${(frogPosition.x * 100) / gridWidth}%` }}
             />
           )}
         </div>
@@ -119,16 +245,21 @@ const GameContainer = () => {
     return lanes;
   };
   
-  // Game controls placeholder
+  // Game controls
   const handleStartGame = () => {
     setGameActive(true);
+    setGameOver(false);
     setScore(0);
     setLives(3);
     setLevel(1);
-    setFrogPosition({
-      x: 7,
-      y: 10
-    });
+    resetFrog();
+    
+    // Reset vehicles to starting positions
+    setVehicles([
+      { id: 1, x: 2, y: 3, direction: 'right', length: 2, speed: 1 },
+      { id: 2, x: 8, y: 5, direction: 'left', length: 3, speed: 1.2 },
+      { id: 3, x: 4, y: 7, direction: 'right', length: 2, speed: 0.8 }
+    ]);
   };
   
   return (
@@ -141,15 +272,26 @@ const GameContainer = () => {
       
       <div className="game-board">
         {renderLanes()}
+        
+        {/* Game over message */}
+        {gameOver && (
+          <div className="game-overlay">
+            <h2>Game Over!</h2>
+            <p>Final Score: {score}</p>
+            <button className="btn btn-large" onClick={handleStartGame}>
+              Play Again
+            </button>
+          </div>
+        )}
       </div>
       
       <div className="game-controls">
-        {!gameActive && (
+        {!gameActive && !gameOver && (
           <button className="btn btn-large" onClick={handleStartGame}>
             Start Game
           </button>
         )}
-        {gameActive && (
+        {gameActive && !gameOver && (
           <div className="control-info">
             Use arrow keys to move the frog
           </div>
