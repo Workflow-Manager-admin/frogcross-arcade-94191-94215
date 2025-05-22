@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import GameContainer from './components/GameContainer';
 
 function App() {
   return (
@@ -8,25 +9,32 @@ function App() {
         <div className="container">
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <div className="logo">
-              <span className="logo-symbol">*</span> KAVIA AI
+              <span className="logo-symbol">🐸</span> FrogCross Arcade
             </div>
-            <button className="btn">Template Button</button>
+            <div className="nav-info">Classic Arcade Game</div>
           </div>
         </div>
       </nav>
 
       <main>
-        <div className="container">
-          <div className="hero">
-            <div className="subtitle">AI Workflow Manager Template</div>
-            
-            <h1 className="title">main_container_for_frogcross_arcade</h1>
-            
+        <div className="container game-page">
+          <div className="game-header">
+            <h1 className="title">FrogCross Arcade</h1>
             <div className="description">
-              Start building your application.
+              Help the frog cross the busy road by avoiding moving vehicles!
             </div>
-            
-            <button className="btn btn-large">Button</button>
+          </div>
+          
+          <GameContainer />
+          
+          <div className="game-instructions">
+            <h2>How to Play</h2>
+            <ul>
+              <li>Use the arrow keys to move the frog</li>
+              <li>Avoid getting hit by vehicles</li>
+              <li>Reach the safe zone at the top</li>
+              <li>Complete levels to increase your score</li>
+            </ul>
           </div>
         </div>
       </main>
