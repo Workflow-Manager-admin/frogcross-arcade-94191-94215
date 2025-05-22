@@ -344,11 +344,11 @@ const GameContainer = () => {
     setLevel(1);
     resetFrog();
     
-    // Reset vehicles to starting positions
+    // Reset vehicles to starting positions with wrapping properties
     setVehicles([
-      { id: 1, x: 2, y: 3, direction: 'right', length: 2, speed: 1 },
-      { id: 2, x: 8, y: 5, direction: 'left', length: 3, speed: 1.2 },
-      { id: 3, x: 4, y: 7, direction: 'right', length: 2, speed: 0.8 }
+      { id: 1, x: 2, y: 3, direction: 'right', length: 2, speed: 1, wrapping: false, exitingPart: 0, enteringPart: 0 },
+      { id: 2, x: 8, y: 5, direction: 'left', length: 3, speed: 1.2, wrapping: false, exitingPart: 0, enteringPart: 0 },
+      { id: 3, x: 4, y: 7, direction: 'right', length: 2, speed: 0.8, wrapping: false, exitingPart: 0, enteringPart: 0 }
     ]);
   };
   
