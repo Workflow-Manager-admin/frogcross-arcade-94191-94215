@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './GameContainer.css';
 
 /**
@@ -16,8 +16,15 @@ const GameContainer = () => {
   // Frog position state (grid-based)
   const [frogPosition, setFrogPosition] = useState({
     x: 7, // Middle of the bottom lane
-    y: 9  // Start at the bottom of the grid
+    y: 10  // Start at the bottom of the grid (0-indexed, so 10 is the 11th lane)
   });
+  
+  // Vehicle positions (initial placeholders)
+  const [vehicles, setVehicles] = useState([
+    { id: 1, x: 2, y: 3, direction: 'right', length: 2 },  // Lane 4 (0-indexed)
+    { id: 2, x: 8, y: 5, direction: 'left', length: 3 },   // Lane 6 (0-indexed)
+    { id: 3, x: 4, y: 7, direction: 'right', length: 2 }   // Lane 8 (0-indexed)
+  ]);
   
   // Number of lanes in the game
   const totalLanes = 11; // 1 starting lane, 9 crossing lanes, 1 goal lane
@@ -40,10 +47,25 @@ const GameContainer = () => {
         laneType = 'lane road-lane road-lane-dark';
       }
       
+      // Get vehicles in this lane
+      const laneVehicles = vehicles.filter(vehicle => vehicle.y === i);
+      
       lanes.push(
         <div key={`lane-${i}`} className={laneType}>
-          {/* Lane content will be populated with vehicles or other items later */}
-          {i === totalLanes - 1 && frogPosition.y === i && (
+          {/* Display vehicles in this lane */}
+          {laneVehicles.map(vehicle => (
+            <div 
+              key={`vehicle-${vehicle.id}`}
+              className={`vehicle ${vehicle.direction === 'right' ? 'vehicle-right' : 'vehicle-left'}`}
+              style={{ 
+                left: `${(vehicle.x * 100) / 15}%`,
+                width: `${(vehicle.length * 100) / 15}%`
+              }}
+            />
+          ))}
+          
+          {/* Display frog if it's in this lane */}
+          {frogPosition.y === i && (
             <div 
               className="frog"
               style={{ left: `${(frogPosition.x * 100) / 15}%` }}
