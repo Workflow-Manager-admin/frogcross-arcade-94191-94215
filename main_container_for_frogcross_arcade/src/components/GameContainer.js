@@ -32,7 +32,7 @@ const GameContainer = () => {
   const gridWidth = 15; // 15 grid cells horizontally
   
   // Handle key presses for frog movement
-  const handleKeyDown = (event) => {
+  const handleKeyDown = useCallback((event) => {
     if (!gameActive || gameOver) return;
     
     // Clone current position to avoid direct state mutation
