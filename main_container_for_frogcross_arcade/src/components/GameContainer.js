@@ -65,7 +65,7 @@ const GameContainer = () => {
         handleLevelComplete();
       }
     }
-  };
+  }, [gameActive, frogPosition, gameOver, handleLevelComplete]);
   
   // Set up event listeners when component mounts
   useEffect(() => {
@@ -102,7 +102,7 @@ const GameContainer = () => {
   }, [vehicles, frogPosition, gameActive, gameOver, checkCollisions]);
   
   // Move vehicles based on direction and speed with smooth wrapping
-  const moveVehicles = () => {
+  const moveVehicles = useCallback(() => {
     // Speed factor increases with level
     const levelSpeedFactor = 1 + (level - 1) * 0.2;
     
@@ -195,7 +195,7 @@ const GameContainer = () => {
     if (collision) {
       handleCollision();
     }
-  };
+  }, [gameActive, frogPosition, gameOver, handleLevelComplete]);
   
   // Handle collision with vehicle
   const handleCollision = () => {
