@@ -13,15 +13,38 @@
 .game-board {
   width: 100%;
   aspect-ratio: 15/11;
-  border: 4px solid var(--border-color);
+  border: 4px solid var(--arcade-neon-blue);
   border-radius: 8px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-color: #222;
+  background-color: #111;
   position: relative;
   margin: 20px 0;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 20px var(--arcade-neon-blue), 
+              inset 0 0 15px rgba(0, 217, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+/* Arcade screen effect overlay */
+.game-board::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.01) 50%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0.4;
 }
 
 /* Lanes Styling */
@@ -29,27 +52,51 @@
   flex: 1;
   width: 100%;
   position: relative;
+  transition: background-color 0.3s ease;
 }
 
 .start-lane {
-  background-color: #2E7D32; /* Dark green for starting area */
+  background-color: var(--start-green);
+  background-image: 
+    radial-gradient(circle, var(--start-green-glow) 1px, transparent 1px),
+    radial-gradient(circle, var(--start-green-glow) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .goal-lane {
-  background-color: #1565C0; /* Blue for goal area */
+  background-color: var(--goal-blue);
+  background-image: linear-gradient(
+    to right,
+    var(--goal-blue) 40%,
+    var(--goal-blue-glow) 40%,
+    var(--goal-blue-glow) 60%,
+    var(--goal-blue) 60%
+  );
+  background-size: 20% 100%;
+  box-shadow: inset 0 -2px 8px rgba(0, 0, 0, 0.6);
+  border-bottom: 2px solid var(--arcade-neon-blue);
 }
 
 .road-lane {
-  background-image: linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px);
-  background-size: 6.666% 100%; /* 15 segments */
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--road-stripe) 0px,
+    var(--road-stripe) 2px,
+    transparent 2px,
+    transparent 100px
+  );
+  background-size: 100px 100%;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .road-lane-dark {
-  background-color: #424242;
+  background-color: var(--road-dark);
 }
 
 .road-lane-light {
-  background-color: #616161;
+  background-color: var(--road-light);
 }
 
 /* Frog styling */
@@ -57,50 +104,81 @@
   position: absolute;
   width: 6%;
   height: 80%;
-  background-color: var(--frog-green); /* Bright green for frog */
+  background-color: var(--frog-green);
   border-radius: 50%;
   top: 10%;
-  transition: all 0.15s ease-out;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 10;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 15px var(--frog-green-glow), 
+              inset 0 0 8px rgba(255, 255, 255, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: frog-hop 0.15s ease-out;
-}
-
-@keyframes frog-hop {
-  0% { transform: scale(0.9); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  animation: frog-idle 1s infinite alternate;
+  border: 2px solid rgba(255, 255, 255, 0.8);
 }
 
 .frog::after {
   content: "🐸";
-  font-size: 100%;
+  font-size: 120%;
   line-height: 1;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
 }
 
-/* Vehicle styling */
+@keyframes frog-idle {
+  0% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes frog-hop {
+  0% { transform: scale(0.9) translateY(5%); }
+  50% { transform: scale(1.1) translateY(-10%); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.frog.hopping {
+  animation: frog-hop 0.2s ease-out;
+}
+
+/* Vehicle styling with multiple colors */
 .vehicle {
   position: absolute;
   height: 70%;
-  background-color: var(--vehicle-red);
   top: 15%;
   border-radius: 4px;
   z-index: 5;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  transition: left 0.05s linear, width 0.05s linear; /* Smooth transition for vehicle movement and size */
+  transition: left 0.05s linear, width 0.05s linear;
+  background: linear-gradient(to bottom, 
+              rgba(255, 255, 255, 0.15) 0%, 
+              rgba(0, 0, 0, 0.15) 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), 
+              0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.vehicle:nth-of-type(4n+1) {
+  background-color: var(--vehicle-red);
+}
+
+.vehicle:nth-of-type(4n+2) {
+  background-color: var(--vehicle-blue);
+}
+
+.vehicle:nth-of-type(4n+3) {
+  background-color: var(--vehicle-yellow);
+}
+
+.vehicle:nth-of-type(4n+4) {
+  background-color: var(--vehicle-purple);
 }
 
 .vehicle-right {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .vehicle-left {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 }
 
 /* Add a windshield look to vehicles */
@@ -109,9 +187,10 @@
   position: absolute;
   width: 30%;
   height: 50%;
-  background-color: rgba(173, 216, 230, 0.7);
+  background-color: rgba(173, 216, 230, 0.8);
   top: 25%;
   border-radius: 3px;
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.6);
 }
 
 .vehicle-right::after {
@@ -122,18 +201,49 @@
   left: 10%;
 }
 
+/* Headlight/taillight effects */
+.vehicle::before {
+  content: "";
+  position: absolute;
+  width: 8%;
+  height: 20%;
+  border-radius: 50%;
+  top: 40%;
+}
+
+.vehicle-right::before {
+  right: 2%;
+  background-color: rgba(255, 0, 0, 0.9);
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+}
+
+.vehicle-left::before {
+  left: 2%;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
 /* Game Stats */
 .game-stats {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
-  padding: 10px 0;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--arcade-neon-blue);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+  margin-bottom: 10px;
 }
 
 .stats-item {
   font-size: 1.2rem;
   font-weight: bold;
   color: var(--text-color);
+  text-shadow: 0 0 5px var(--arcade-neon-blue);
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  letter-spacing: 1px;
 }
 
 /* Game Controls */
@@ -141,14 +251,46 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-top: 20px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid var(--arcade-neon-pink);
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
 }
 
 .control-info {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  color: var(--arcade-neon-yellow);
   text-align: center;
   padding: 10px;
+  text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+  animation: pulse 2s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.btn {
+  background: linear-gradient(to bottom, 
+              var(--arcade-neon-green) 0%, 
+              var(--start-green) 100%);
+  border: 2px solid var(--arcade-neon-green);
+  box-shadow: 0 0 15px var(--success-glow);
+  transform: perspective(1px) translateZ(0);
+  transition: all 0.3s;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px var(--success-glow);
+  background: linear-gradient(to bottom, 
+              var(--arcade-neon-green) 20%,
+              var(--start-green) 100%);
 }
 
 /* Game Over Overlay */
@@ -158,7 +300,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: var(--overlay-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -166,34 +308,100 @@
   z-index: 20;
   color: white;
   text-align: center;
+  animation: overlay-appear 0.5s ease-in-out;
+  background-image: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+}
+
+@keyframes overlay-appear {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .game-overlay h2 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 10px;
-  color: var(--kavia-orange);
+  color: var(--arcade-neon-pink);
+  text-shadow: 0 0 10px var(--arcade-neon-pink), 
+              0 0 20px var(--arcade-neon-pink);
+  animation: title-flicker 2s infinite alternate;
+  letter-spacing: 2px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+}
+
+@keyframes title-flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px var(--arcade-neon-pink), 0 0 20px var(--arcade-neon-pink);
+  }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+    opacity: 0.4;
+    text-shadow: none;
+  }
 }
 
 .game-overlay p {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: var(--arcade-neon-yellow);
+  text-shadow: 0 0 10px var(--arcade-neon-yellow);
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+}
+
+.game-overlay .btn {
+  padding: 15px 30px;
   font-size: 1.5rem;
-  margin-bottom: 20px;
+  animation: button-pulse 2s infinite alternate;
+}
+
+@keyframes button-pulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
 }
 
 /* Level up effect */
 @keyframes level-up-flash {
-  0% { background-color: rgba(76, 175, 80, 0); }
-  50% { background-color: rgba(76, 175, 80, 0.3); }
-  100% { background-color: rgba(76, 175, 80, 0); }
+  0% { background-color: rgba(153, 0, 255, 0); }
+  50% { background-color: rgba(153, 0, 255, 0.3); }
+  100% { background-color: rgba(153, 0, 255, 0); }
 }
 
 .level-up {
   animation: level-up-flash 1s;
 }
 
+/* Success animation for reaching the goal */
+@keyframes success-glow {
+  0% { box-shadow: 0 0 20px rgba(57, 255, 20, 0.5); }
+  50% { box-shadow: 0 0 40px rgba(57, 255, 20, 0.8); }
+  100% { box-shadow: 0 0 20px rgba(57, 255, 20, 0.5); }
+}
+
+.success-animation {
+  animation: success-glow 1s;
+}
+
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-container {
+    padding: 15px 10px;
+  }
+  
+  .game-stats {
+    padding: 10px;
+  }
+  
+  .stats-item {
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 600px) {
   .game-container {
-    padding: 10px;
+    padding: 10px 5px;
   }
   
   .stats-item {
@@ -203,4 +411,22 @@
   .control-info {
     font-size: 0.9rem;
   }
+  
+  .game-overlay h2 {
+    font-size: 2.5rem;
+  }
+  
+  .game-overlay p {
+    font-size: 1.5rem;
+  }
+}
+
+/* Font face for arcade-style text - Will fallback gracefully if unavailable */
+@font-face {
+  font-family: 'Press Start 2P';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/pressstart2p/v14/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
