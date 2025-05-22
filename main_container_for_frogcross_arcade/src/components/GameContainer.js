@@ -75,7 +75,7 @@ const GameContainer = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [gameActive, frogPosition, gameOver]); // Re-add listeners when these dependencies change
+  }, [gameActive, frogPosition, gameOver, handleKeyDown]); // Re-add listeners when these dependencies change
   
   // Animation timer for vehicle movement
   useEffect(() => {
