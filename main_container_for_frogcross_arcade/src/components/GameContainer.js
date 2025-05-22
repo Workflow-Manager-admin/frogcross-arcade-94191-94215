@@ -101,32 +101,71 @@ const GameContainer = () => {
     }
   }, [vehicles, frogPosition]);
   
-  // Move vehicles based on direction and speed
+  // Move vehicles based on direction and speed with smooth wrapping
   const moveVehicles = () => {
     // Speed factor increases with level
     const levelSpeedFactor = 1 + (level - 1) * 0.2;
     
     setVehicles(currentVehicles => 
       currentVehicles.map(vehicle => {
-        // Calculate new position based on direction and speed
-        let newX = vehicle.x;
+        // Deep clone the vehicle object to avoid mutations
+        const updatedVehicle = { ...vehicle };
         const moveAmount = vehicle.speed * levelSpeedFactor * 0.1;
         
+        if (vehicle.wrapping) {
+          // Vehicle is in the process of wrapping
+          if (vehicle.direction === 'right') {
+            // For right-moving vehicles, increase entering part
+            updatedVehicle.enteringPart += moveAmount;
+            
+            // When fully entered, end wrapping
+            if (updatedVehicle.enteringPart >= vehicle.length) {
+              updatedVehicle.wrapping = false;
+              updatedVehicle.x = updatedVehicle.enteringPart - vehicle.length;
+              updatedVehicle.enteringPart = 0;
+              updatedVehicle.exitingPart = 0;
+            }
+          } else {
+            // For left-moving vehicles, increase exiting part
+            updatedVehicle.exitingPart -= moveAmount;
+            
+            // When fully exited, end wrapping
+            if (updatedVehicle.exitingPart <= -vehicle.length) {
+              updatedVehicle.wrapping = false;
+              updatedVehicle.x = gridWidth - updatedVehicle.enteringPart;
+              updatedVehicle.enteringPart = 0;
+              updatedVehicle.exitingPart = 0;
+            } else {
+              // Continue entering from the right
+              updatedVehicle.enteringPart += moveAmount;
+            }
+          }
+          
+          return updatedVehicle;
+        }
+        
+        // Regular movement (not wrapping)
         if (vehicle.direction === 'right') {
-          newX = vehicle.x + moveAmount;
-          // Wrap around when vehicle goes off-screen
-          if (newX > gridWidth) {
-            newX = -vehicle.length;
+          updatedVehicle.x = vehicle.x + moveAmount;
+          
+          // Start wrapping when vehicle reaches the edge
+          if (updatedVehicle.x > gridWidth - vehicle.length * 0.3) { // Start wrapping earlier to look smooth
+            updatedVehicle.wrapping = true;
+            updatedVehicle.exitingPart = gridWidth - updatedVehicle.x;
+            updatedVehicle.enteringPart = 0;
           }
         } else {
-          newX = vehicle.x - moveAmount;
-          // Wrap around when vehicle goes off-screen
-          if (newX + vehicle.length < 0) {
-            newX = gridWidth;
+          updatedVehicle.x = vehicle.x - moveAmount;
+          
+          // Start wrapping when vehicle reaches the edge
+          if (updatedVehicle.x < -vehicle.length * 0.7) {  // Start wrapping earlier
+            updatedVehicle.wrapping = true;
+            updatedVehicle.exitingPart = updatedVehicle.x;
+            updatedVehicle.enteringPart = 0;
           }
         }
         
-        return { ...vehicle, x: newX };
+        return updatedVehicle;
       })
     );
   };
