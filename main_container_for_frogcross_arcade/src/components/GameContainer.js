@@ -223,7 +223,7 @@ const GameContainer = () => {
     
     // Reset frog position
     resetFrog();
-  };
+  }, [level, resetFrog]);
   
   // Reset frog to starting position
   const resetFrog = () => {
