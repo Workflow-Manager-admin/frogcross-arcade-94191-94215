@@ -60,12 +60,19 @@
   background-color: var(--frog-green); /* Bright green for frog */
   border-radius: 50%;
   top: 10%;
-  transition: left 0.1s ease-out;
+  transition: all 0.15s ease-out;
   z-index: 10;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: frog-hop 0.15s ease-out;
+}
+
+@keyframes frog-hop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .frog::after {
