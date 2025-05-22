@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './GameContainer.css';
 
 /**
@@ -92,14 +92,14 @@ const GameContainer = () => {
     return () => {
       clearInterval(animationTimer);
     };
-  }, [gameActive, vehicles, level, gameOver]);
+  }, [gameActive, level, gameOver, moveVehicles]);
   
   // Check for collisions after each vehicle movement or frog position update
   useEffect(() => {
     if (gameActive && !gameOver) {
       checkCollisions();
     }
-  }, [vehicles, frogPosition]);
+  }, [vehicles, frogPosition, gameActive, gameOver, checkCollisions]);
   
   // Move vehicles based on direction and speed with smooth wrapping
   const moveVehicles = () => {
