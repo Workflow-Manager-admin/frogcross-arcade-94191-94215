@@ -19,6 +19,47 @@ const GameContainer = () => {
     y: 10  // Start at the bottom of the grid (0-indexed, so 10 is the 11th lane)
   });
   
+  // Handle key presses for frog movement
+  const handleKeyDown = (event) => {
+    if (!gameActive) return;
+    
+    // Clone current position to avoid direct state mutation
+    const newPosition = { ...frogPosition };
+    
+    // Update position based on key pressed
+    switch (event.key) {
+      case 'ArrowUp':
+        if (newPosition.y > 0) newPosition.y -= 1;
+        break;
+      case 'ArrowDown':
+        if (newPosition.y < 10) newPosition.y += 1;
+        break;
+      case 'ArrowLeft':
+        if (newPosition.x > 0) newPosition.x -= 1;
+        break;
+      case 'ArrowRight':
+        if (newPosition.x < 14) newPosition.x += 1;
+        break;
+      default:
+        return; // Exit if not an arrow key
+    }
+    
+    // Update frog position if it changed
+    if (newPosition.x !== frogPosition.x || newPosition.y !== frogPosition.y) {
+      setFrogPosition(newPosition);
+    }
+  };
+  
+  // Set up event listeners when component mounts
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Clean up event listeners when component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [gameActive, frogPosition]); // Re-add listeners when these dependencies change
+  
   // Vehicle positions (initial placeholders)
   const [vehicles, setVehicles] = useState([
     { id: 1, x: 2, y: 3, direction: 'right', length: 2 },  // Lane 4 (0-indexed)
