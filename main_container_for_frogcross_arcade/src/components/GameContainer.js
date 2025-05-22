@@ -76,6 +76,7 @@ const GameContainer = () => {
   
   // Frog animation states
   const [frogAnimation, setFrogAnimation] = useState('');
+  const [collisionAnimation, setCollisionAnimation] = useState(false);
   
   // Handle key presses for frog movement
   const handleKeyDown = useCallback((event) => {
